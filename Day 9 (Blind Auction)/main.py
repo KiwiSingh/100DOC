@@ -30,3 +30,5 @@ while continue_bidding:
         find_highest_bidder(bids)
     elif should_continue == "yes":
         clear_screen()
+    else:
+        print("Invalid input, ano baka. Please type 'yes' or 'no'.")
