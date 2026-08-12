@@ -29,8 +29,9 @@ def main_game():
                 Guess again.
                 """)
 
-            if counter_easy == 0 and guess is not number_to_guess:
+            if counter_easy == 0 and guess != number_to_guess:
                 is_game_over = True
+                print(f"You're out of guesses! The number was {number_to_guess}")
                 go_again = input("Do you want to play again? (y/n): ")
                 if go_again == "y":
                     clear_screen()
