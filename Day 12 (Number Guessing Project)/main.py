@@ -3,28 +3,28 @@ import random
 
 def main_game(attempts):
     number_to_guess = random.randint(1, 100)
-    counter_easy = attempts
+    counter = attempts
     is_game_over = False
     while not is_game_over:
-        print(f"You have {counter_easy} attempts remaining to guess the number.")
+        print(f"You have {counter} attempts remaining to guess the number.")
         guess = int(input("Make a guess: "))
         if guess == number_to_guess:
             is_game_over = True
             print("Congratulations, you guessed the number.")
         elif guess < number_to_guess:
-            counter_easy -= 1
+            counter -= 1
             print("""
             Too low.
             Guess again.
             """)
         elif guess > number_to_guess:
-            counter_easy -= 1
+            counter -= 1
             print("""
             Too high.
             Guess again.
             """)
 
-        if counter_easy == 0 and guess != number_to_guess:
+        if counter == 0 and guess != number_to_guess:
             is_game_over = True
             print(f"You're out of guesses! The number was {number_to_guess}")
             go_again = input("Do you want to play again? (y/n): ")
