@@ -3,6 +3,7 @@ from food import Food
 from scoreboard import Scoreboard
 from snake import Snake
 import time
+from controller import Controller
 
 screen = Screen()
 screen.setup(width=2160, height=2160)
@@ -13,6 +14,8 @@ screen.tracer(0)
 snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
+controller = Controller()
+
 
 screen.listen()
 screen.onkey(snake.up, "Up")
@@ -20,11 +23,13 @@ screen.onkey(snake.down, "Down")
 screen.onkey(snake.left, "Left")
 screen.onkey(snake.right, "Right")
 
+
 game_is_on = True
 while game_is_on:
     screen.update()
     time.sleep(0.1)
 
+    controller.update(snake)
     snake.move()
 
     # Detect collision with food
