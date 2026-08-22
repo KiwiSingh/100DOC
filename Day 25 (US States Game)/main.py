@@ -28,8 +28,6 @@ while game_is_on:
         text.goto(int(state_data.x.item()), int(state_data.y.item()))
         text.write(answer_state)
         screen.update()
-    if answer_state not in guessed_states:
-        states_to_learn.append(answer_state)
-
+    
     if len(guessed_states) == 50:
         game_is_on = False
