@@ -17,7 +17,7 @@ while game_is_on:
         for state in states:
             if state not in guessed_states:
                 states_to_learn.append(state)
-            pd.DataFrame(states_to_learn).to_csv("states_to_learn.csv")
+        pd.DataFrame(states_to_learn).to_csv("states_to_learn.csv")
         break
     if answer_state in states:
         guessed_states.append(answer_state)
