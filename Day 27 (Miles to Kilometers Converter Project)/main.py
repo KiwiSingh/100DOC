@@ -17,8 +17,7 @@ km_text.grid(row=1, column=2)
 
 def convert_to_kilometers():
     miles = miles_entry.get()
-    kilometres_unround = int(miles) * 1.609344
-    kilometres = round(kilometres_unround, 2)
+    kilometres = round((float(miles) * 1.609344), 2)
     km_conv.config(text=kilometres)
 
 convert_button = Button(window, text="Calculate", command=convert_to_kilometers)
