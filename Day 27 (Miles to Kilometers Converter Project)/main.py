@@ -17,8 +17,11 @@ km_text.grid(row=1, column=2)
 
 def convert_to_kilometers():
     miles = miles_entry.get()
-    kilometres = round((float(miles) * 1.609344), 2)
-    km_conv.config(text=kilometres)
+    try:
+        kilometres = round((float(miles) * 1.609344), 2)
+        km_conv.config(text=kilometres)
+    except ValueError:
+        km_conv.config(text="Error! Please enter a valid numerical value!")
 
 convert_button = Button(window, text="Calculate", command=convert_to_kilometers)
 convert_button.grid(row=2, column=1)
