@@ -33,16 +33,16 @@ CV_URL = f"{CV_URL_BASE}/api/news"
 cv_parameters = {
     "tickers": TICKER
 }
-if pct_change > 5 or pct_change < -5:
+if pct_change >= 5 or pct_change <= -5:
     cv_resp = requests.get(CV_URL, params=cv_parameters, timeout=10)
     cv_resp.raise_for_status()
     cv_news_data = cv_resp.json()
     cv_articles = cv_news_data.get("articles", [])[:2] # So that we don't get more than 2 articles lol
     message_body = ""
     for a in cv_articles:
-        if pct_change > 5:
+        if pct_change >= 5:
             message_body += f"ETH: 🔺{pct_change}%\n"
-        elif pct_change < -5:
+        elif pct_change <= -5:
             message_body +=f"ETH: 🔻{pct_change}%\n"
         message_body += f"- {a['title']} [{a['source']}]\n"
         message_body += f"  {a['url']}\n\n"
