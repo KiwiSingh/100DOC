@@ -1,25 +1,22 @@
-import os
 import base64
+import os
 import smtplib
 
 user_email_b64 = "cGFydGhhc2FyYXRoaS5zaW5naEBnbWFpbC5jb20="
 user_email = base64.b64decode(user_email_b64).decode("utf-8")
-password = os.getenv("SMTP_PASSWORD")
+
 
 class NotificationManager:
     def __init__(self):
         self.email = user_email
-        self.password = password
-        self.connection = smtplib.SMTP("smtp.gmail.com", 587)
+        self.password = os.getenv("SMTP_PASSWORD")
 
-    def send_emails(self, email_list, email_body):
-        with self.connection:
-            self.connection.starttls()
-            self.connection.login(self.email, self.password)
-            for email in email_list:
-                self.connection.sendmail(
-                    from_addr=self.email,
-                    to_addrs=email,
-                    msg=f"Subject:New Low Price Flight!\n\n{email_body}".encode('utf-8')
-                )
-
+    def send_email(self, to_address, subject, body):
+        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+            connection.starttls()
+            connection.login(self.email, self.password)
+            connection.sendmail(
+                from_addr=self.email,
+                to_addrs=to_address,
+                msg=f"Subject:{subject}\n\n{body}".encode('utf-8')
+            )

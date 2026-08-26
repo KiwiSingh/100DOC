@@ -7,18 +7,18 @@ class FlightData:
         self.return_date = return_date
         self.stops = stops
 
+
 def find_cheapest_flight(data, return_date):
     # Handling empty or null data
     if data is None or (not data.get("best_flights") and not data.get("other_flights")):
         print("No flight data")
-        return FlightData("N/A", "N/A", "N/A", "N/A", "N/A")
+        # FIX: was missing the 6th arg (stops) — this used to throw a TypeError
+        return FlightData("N/A", "N/A", "N/A", "N/A", "N/A", "N/A")
 
     # Combining lists for ease of parsing
-
     all_flights = data.get("best_flights", []) + data.get("other_flights", [])
 
     # Parsing the data from the first flight in the list
-
     first_flight = all_flights[0]
     lowest_price = first_flight["price"]
     origin = first_flight["flights"][0]["departure_airport"]["id"]
