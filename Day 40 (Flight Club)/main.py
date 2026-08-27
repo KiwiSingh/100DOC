@@ -25,8 +25,8 @@ notification_manager = NotificationManager()
 # ====================================SET THE DATES==================================#
 
 tomorrow = datetime.now() + timedelta(days=1)
-six_months_from_today = datetime.now() + timedelta(days=184)
-return_date_str = six_months_from_today.strftime("%Y-%m-%d")
+ten_days_from_today = datetime.now() + timedelta(days=10)
+return_date_str = ten_days_from_today.strftime("%Y-%m-%d")
 
 # =========================PULL EACH USER'S TRIP REQUEST=============================#
 # Each row = one Google Form submission: {email, origin, destination1, destination2, destination3}
@@ -117,7 +117,7 @@ for request in flight_requests:
         pprint(f"Getting flights from {origin} to {destination} for {email}...")
 
         flights = flights_search.check_flights(
-            origin, destination, from_time=tomorrow, to_time=six_months_from_today
+            origin, destination, from_time=tomorrow, to_time=ten_days_from_today
         )
         cheapest = find_cheapest_flight(flights, return_date=return_date_str)
 
@@ -125,7 +125,7 @@ for request in flight_requests:
         if cheapest.price == "N/A":
             pprint(f"No direct flight {origin}->{destination}. Checking indirect...")
             flights = flights_search.check_flights(
-                origin, destination, from_time=tomorrow, to_time=six_months_from_today, is_direct=False
+                origin, destination, from_time=tomorrow, to_time=ten_days_from_today, is_direct=False
             )
             cheapest = find_cheapest_flight(flights, return_date=return_date_str)
 
