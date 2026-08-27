@@ -1,7 +1,8 @@
 import re
 import requests_cache
 from pprint import pprint
-from data_manager import DataManager, DEFAULT_LOWEST_PRICE
+from dateutil import parser as date_parser
+from data_manager import DataManager
 from flight_search import FlightSearch
 from flight_data import find_cheapest_flight
 from datetime import datetime, timedelta
@@ -37,13 +38,6 @@ price_lookup = {
     (row["origin"].strip().upper(), row["destination"].strip().upper()): row
     for row in price_data
 }
-
-# Reset every known route back to the absurdly-high default at the START of
-# each run, so every valid fare found this run counts as an "improvement" and
-# every recipient on a matching route gets emailed, regardless of past runs.
-for row in price_lookup.values():
-    data_manager.update_lowest_price(row["id"], DEFAULT_LOWEST_PRICE)
-    row["lowestPrice"] = DEFAULT_LOWEST_PRICE
 
 # Snapshot BEFORE the run starts. Everyone in this run gets compared against
 # this, not against each other -- otherwise the first person to search a route
@@ -93,6 +87,30 @@ for request in flight_requests:
         pprint(f"Skipping {email}: none of their destination codes were valid.")
         continue
 
+    # =========DETERMINE IF THIS IS A "NEW" SUBMISSION WE HAVEN'T CHECKED YET=========#
+    # Google Forms auto-adds a "Timestamp" column -> Sheety camelCases it to "timestamp".
+    submitted_at = None
+    submitted_at_raw = request.get("timestamp", "").strip()
+    if submitted_at_raw:
+        try:
+            submitted_at = date_parser.parse(submitted_at_raw)
+        except (ValueError, OverflowError):
+            pprint(f"{email}: couldn't parse form timestamp '{submitted_at_raw}', treating as not-new.")
+
+    last_notified_raw = request.get("lastNotified", "").strip()
+    last_notified_at = None
+    if last_notified_raw:
+        try:
+            last_notified_at = date_parser.parse(last_notified_raw)
+        except (ValueError, OverflowError):
+            pprint(f"{email}: couldn't parse lastNotified '{last_notified_raw}', treating as never-notified.")
+
+    is_new_submission = submitted_at is not None and (
+        last_notified_at is None or submitted_at > last_notified_at
+    )
+    if is_new_submission:
+        pprint(f"{email}: new/updated submission since last check -- bypassing price comparison.")
+
     results = []
 
     for destination in destinations:
@@ -125,14 +143,21 @@ for request in flight_requests:
             baseline_lowest[route_key] = price_row["lowestPrice"]
 
         stored_lowest = baseline_lowest[route_key]
+        beats_stored_price = cheapest.price < stored_lowest
 
-        if cheapest.price < stored_lowest:
-            pprint(f"{origin}->{destination}: INR {cheapest.price} beats stored lowest INR {stored_lowest}.")
-            # Only push to the sheet if this is a new low WITHIN this run too --
-            # avoids redundant/conflicting writes when several people share a route.
+        if beats_stored_price or is_new_submission:
+            if beats_stored_price:
+                pprint(f"{origin}->{destination}: INR {cheapest.price} beats stored lowest INR {stored_lowest}.")
+            else:
+                pprint(f"{origin}->{destination}: INR {cheapest.price} isn't a new low, but sending anyway (new submission).")
+
+            # Only push to the sheet if this is a genuine new low -- avoids
+            # redundant/conflicting writes, and avoids "new submission" sends
+            # from artificially inflating the recorded lowest price.
             if cheapest.price < price_row["lowestPrice"]:
                 data_manager.update_lowest_price(price_row["id"], cheapest.price)
                 price_row["lowestPrice"] = cheapest.price
+
             results.append(cheapest)
         else:
             pprint(f"{origin}->{destination}: INR {cheapest.price} isn't lower than stored INR {stored_lowest}. Skipping.")

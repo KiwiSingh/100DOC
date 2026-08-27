@@ -16,7 +16,7 @@ class FlightSearch:
             "type": "1",
             "adults": "1",
             "currency": "INR",
-            "travel_class": "3",
+            "travel_class": "2",
             "api_key": self._api_key,
 
         }
