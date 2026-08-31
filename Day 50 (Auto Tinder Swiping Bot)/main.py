@@ -8,6 +8,7 @@ from selenium.common.exceptions import (
     ElementClickInterceptedException,
     NoSuchElementException,
     TimeoutException,
+    WebDriverException,
 )
 import os
 from time import sleep
@@ -71,8 +72,8 @@ try:
 
     print("Login button found and clicked.")
 
-except:
-    # We use a catch-all "except" block because Selenium can
+except WebDriverException:
+    # We use a catch-all WebDriverException "except" block because Selenium can
     # behave weird sometimes, even when Tinder is logged in
     print("Already logged in, or login button was not found.")
 
