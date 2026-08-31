@@ -120,3 +120,7 @@ while True:
     except TimeoutException:
         print("Like button did not load, retrying...")
         sleep(2)
+
+    if driver.find_elements(By.XPATH, "//button[contains(., 'Go Global')]"):
+        print("Whoa there buddy! You've run out of local women to match with.")
+        break
