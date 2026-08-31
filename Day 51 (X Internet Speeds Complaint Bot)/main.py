@@ -64,15 +64,14 @@ class InternetSpeedTwitterBot():
         self.driver.get("https://x.com")
 
         # Wait for user to login; X's login flow is extremely broken and held together with duct tape.
-        # I'd blame Elon Musk, but that implies he has the necessary brain cells to debug issues with
-        # this platform in the first place. Trying to automate the login only results in account
+        # Trying to automate the login flow only results in account
         # restrictions.
         try:
             self.wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[1]/div/div/div/div/div/div[2]/div/div/div')))
         except NoSuchElementException:
             sleep(60)
 
-        # Send tweet; this part hasn't been tested quite thoroughly, but in theory, it SHOULD work.
+        # Send tweet
         tweet = f"Hey {ISP}, why is my internet speed {self.down} down/{self.up} up - when I pay for {PROMISED_DOWN} down/{PROMISED_UP} up?"
 
         self.tweet_input = self.driver.find_element(By.XPATH, '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[1]/div/div/div/div/div/div[2]/div/div/div')
