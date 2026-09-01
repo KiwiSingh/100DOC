@@ -76,11 +76,7 @@ class InstaFollower:
         sleep(5)
 
         # Wait for followers button to load and clicks on it
-        followers_button = self.wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//a[.//span[contains(., 'followers')]]")
-            )
-        )
+        followers_button = self.wait.until(EC.element_to_be_clickable((By.XPATH, "//a[.//span[contains(., 'followers')]]")))
 
         followers_button.click()
         sleep(2)
@@ -111,10 +107,7 @@ class InstaFollower:
 
         # Find "Follow" buttons
         while stagnant_scrolls < 3:
-            buttons = self.driver.find_elements(
-                By.XPATH,
-                "//div[@role='dialog']//button[normalize-space()='Follow']"
-            )
+            buttons = self.driver.find_elements(By.XPATH, "//div[@role='dialog']//button[normalize-space()='Follow']")
 
             for button in buttons:
                 try:
@@ -128,11 +121,7 @@ class InstaFollower:
                         try:
                             # Safety valve so that we don't unfollow people
                             # on accident lol
-                            cancel = WebDriverWait(self.driver, 1).until(
-                                EC.element_to_be_clickable(
-                                    (By.XPATH, "//button[normalize-space()='Cancel']")
-                                )
-                            )
+                            cancel = WebDriverWait(self.driver, 1).until(EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Cancel']")))
                             cancel.click()
                         except TimeoutException:
                             pass
