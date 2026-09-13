@@ -3,6 +3,9 @@
 #
 # The actual project lives one subdirectory below the repository root.
 
+# Project wide
+*/migrate_sqlite_to_postgres.py
+
 # IDE files
 */.idea/
 */.vscode/
